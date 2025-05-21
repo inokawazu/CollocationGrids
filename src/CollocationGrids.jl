@@ -72,14 +72,14 @@ function derivative(mg::MultiGrid{T}, I, J, order) where T
 end
 
 function derivative(mg::MultiGrid{T, 2}, I, J, order) where T
-          derivative(mg.grids[1], I[1], J[1], order[1]) *
-          derivative(mg.grids[2], I[2], J[2], order[2])
+    derivative(mg.grids[1], I[1], J[1], order[1]) *
+    derivative(mg.grids[2], I[2], J[2], order[2])
 end
 
 function derivative(mg::MultiGrid{T, 3}, I, J, order) where T
-          derivative(mg.grids[1], I[1], J[1], order[1]) *
-          derivative(mg.grids[2], I[2], J[2], order[2]) *
-          derivative(mg.grids[3], I[3], J[3], order[3])
+    derivative(mg.grids[1], I[1], J[1], order[1]) *
+    derivative(mg.grids[2], I[2], J[2], order[2]) *
+    derivative(mg.grids[3], I[3], J[3], order[3])
 end
 
 function derivative_array_matrix(grid::MultiGrid{T, N}, order::Int) where {T, N}
@@ -211,7 +211,7 @@ Base.eachindex(fg::FourierGrid) = 0:(2*fg.N-1)
 
 struct ChebyshevInteriorGrid{T} <: Grid{T}
     N::Int
-    
+
     function ChebyshevInteriorGrid{T}(N::Integer) where T
         N >= 1 || throw(DomainError(N, "Must be positive."))
         return new{T}(N)
@@ -236,7 +236,7 @@ cardinal(ig::ChebyshevInteriorGrid{T}, j, x) where T = interior_cardinal(T, j, i
 
 function interior_derivative(T, i::Integer, j::Integer, N::Integer, order::Integer)::T
     # return _interior_gridpoint_derivative(T, i, j, N, Val(order))
-    
+
     if order == 0
         return T(i == j)
     elseif order == 1
@@ -335,7 +335,7 @@ struct ChebyshevRecombinationGrid{T, V} <: Grid{T}
     bc_left::Symbol
     bc_right::Symbol
     gridpoints::V
-    
+
     function ChebyshevRecombinationGrid{T}(N::Integer, left, right) where T
         N > 0 || DomainError(N, "N must be greater than zero.")
         bf(x) = recombi_basis_function(big(T), left, right, N, x)
@@ -524,7 +524,7 @@ function_vector(f::Function, grid::Grid) = vec(f.(gridpoints(grid)))
 
 # function make_derivative_operators(mg::MultiGrid{T,N}, max_order::Integer) where {T, N}
 #     dmat_dicts = derivative_matrices(mg, max_order)
-    
+
 #     [ 
 #      [DerivativeOperator{T}(dmat_dicts[(dim, order)], dim) for dim in 1:N]
 #      for order in 0:max_order 
