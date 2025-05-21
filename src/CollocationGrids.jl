@@ -203,7 +203,7 @@ gridpoint(fg::FourierGrid{T}, i) where T = fourier_gridpoint(T, i, fg.N)
 cardinal(fg::FourierGrid{T}, j, x) where T = fourier_cardinal(T, j, fg.N, x)
 derivative(fg::FourierGrid{T}, i, j, order) where T = fourier_derivative(T, i, j, fg.N, order)
 
-domain(fg::FourierGrid{T}) where T = (zero(T), T(2pi))
+domain(_::FourierGrid{T}) where T = (zero(T), T(2pi))
 
 Base.eachindex(fg::FourierGrid) = 0:(2*fg.N-1)
 
@@ -266,7 +266,7 @@ end
 derivative(ig::ChebyshevInteriorGrid{T}, i, j, order) where T = interior_derivative(T, i, j, ig.N, order)
 
 Base.eachindex(ig::ChebyshevInteriorGrid) = 1:ig.N
-domain(ig::ChebyshevInteriorGrid{T}) where T = (-one(T), one(T))
+domain(_::ChebyshevInteriorGrid{T}) where T = (-one(T), one(T))
 
 # Cheb-Lobbo Grid
 
