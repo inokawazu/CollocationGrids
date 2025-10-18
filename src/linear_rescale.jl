@@ -16,11 +16,11 @@ Base.eachindex(lrg::LinearRescaleGrid) = eachindex(lrg.grid)
 
 function gridpoint(lrg::LinearRescaleGrid, i)
     xi = gridpoint(lrg.grid, i)
-    return linear_rescale(xi, domain(lrg.grid)..., lrg.a, lrg.b)
+    return scalar_linear_rescale(xi, domain(lrg.grid)..., lrg.a, lrg.b)
 end
 
 function cardinal(lrg::LinearRescaleGrid, i, y)
-    x = linear_rescale(y, lrg.a, lrg.b, domain(lrg.grid)...)
+    x = scalar_linear_rescale(y, lrg.a, lrg.b, domain(lrg.grid)...)
     return cardinal(lrg.grid, i, x)
 end
 
@@ -31,8 +31,8 @@ function derivative(lrg::LinearRescaleGrid, i, j, order)
 end
 
 
-function linear_rescale(g::Grid{T}, x, a::Real, b::Real) where T
-    return LinearRescaleGrid{T}(g, a, b)
+function linear_rescale(g::Grid{T}, a::Real, b::Real) where T
+    return LinearRescaleGrid(g, a, b)
 end
 
 """
@@ -40,7 +40,7 @@ linear_rescale(x, a, b, c, d)
 
 Linearly rescales x from [a,b] -> [c,d]
 """
-linear_rescale(x, a, b, c, d) = (d - c) * (x - a) / (b - a) + c
+scalar_linear_rescale(x, a, b, c, d) = (d - c) * (x - a) / (b - a) + c
 
 """
 linear_rescale_factor(a, b, c, d)
