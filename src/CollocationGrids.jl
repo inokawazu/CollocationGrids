@@ -1,6 +1,7 @@
 module CollocationGrids
 
 export gridpoints, 
+       eachgridpoint,
        boundaries,
        derivative_matrix, 
        interpolate, 
@@ -31,7 +32,8 @@ include("linear_rescale.jl")
 include("cheb.jl")
 include("one_hots.jl")
 
-gridpoints(g::Grid{T}) where T = ( gridpoint(g, i) for i in eachindex(g) )
+gridpoints(g::Grid) = collect(eachgridpoint(g))
+eachgridpoint(g::Grid{T}) where T = (gridpoint(g, i) for i in eachindex(g))
 
 derivative_matrix(g::Grid{T}, order) where T = [
                                                 derivative(g, i, j, order) 
