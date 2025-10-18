@@ -35,7 +35,7 @@ function linear_rescale(g::Grid{T}, a::Real, b::Real) where T
 end
 
 """
-linear_rescale(x, a, b, c, d)
+scalar_linear_rescale(x, a, b, c, d)
 
 Linearly rescales x from [a,b] -> [c,d]
 """
