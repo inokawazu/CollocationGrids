@@ -489,12 +489,8 @@ function derivative(lrg::LinearRescaleGrid, i, j, order)
     return factor * preder
 end
 
-function linear_grid_rescale(a::Real, b::Real)
-    let a = a, b = b
-        function linear_grid_rescale_function(g::Grid)
-            return LinearRescaleGrid(g, a, b)
-        end
-    end
+function linear_grid_rescale(g::Grid, a::Real, b::Real)
+    return LinearRescaleGrid(g, a, b)
 end
 
 # Operators
