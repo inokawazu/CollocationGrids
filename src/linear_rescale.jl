@@ -30,7 +30,6 @@ function derivative(lrg::LinearRescaleGrid, i, j, order)
     return factor * preder
 end
 
-
 function linear_rescale(g::Grid{T}, a::Real, b::Real) where T
     return LinearRescaleGrid(g, a, b)
 end
