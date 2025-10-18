@@ -7,7 +7,7 @@ export gridpoints,
        derivative,
        derivative_array_matrix,
        cardinal,
-       linear_grid_rescale
+       linear_rescale
 
 export MultiGrid, 
        Grid,
@@ -19,17 +19,17 @@ export MultiGrid,
 export coordinate_operators, coordinate_vectors,
        function_operator, function_vector
 
-# File for grids
-include("rescale.jl")
-include("cheb.jl")
-include("one_hots.jl")
-
 import TaylorDiff, LinearAlgebra
 using Roots: find_zeros
 using LinearAlgebra
 using SparseArrays
 
 abstract type Grid{T} end
+
+# File for grids
+include("linear_rescale.jl")
+include("cheb.jl")
+include("one_hots.jl")
 
 gridpoints(g::Grid{T}) where T = ( gridpoint(g, i) for i in eachindex(g) )
 
@@ -454,43 +454,6 @@ function domain(semi::SemiInfiniteGrid{T}) where T
     (; L) = semi
     tosemi(x) = L*(x-l)/(u-x)
     tosemi.(domain(semi.grid))
-end
-
-# LinearRescaleGrid
-
-struct LinearRescaleGrid{T} <: Grid{T}
-    grid::Grid{T}
-    a::T
-    b::T
-
-
-    function LinearRescaleGrid(grid::Grid{T}, a, b) where T
-        a < b || DomainError((a,b), "a and b must satisfy a < b.")
-        return new{T}(grid, T(a), T(b))
-    end
-end
-
-domain(lrg::LinearRescaleGrid) = (lrg.a, lrg.b)
-Base.eachindex(lrg::LinearRescaleGrid) = eachindex(lrg.grid)
-
-function gridpoint(lrg::LinearRescaleGrid, i)
-    xi = gridpoint(lrg.grid, i)
-    return linear_rescale(xi, domain(lrg.grid)..., lrg.a, lrg.b)
-end
-
-function cardinal(lrg::LinearRescaleGrid, i, y)
-    x = linear_rescale(y, lrg.a, lrg.b, domain(lrg.grid)...)
-    return cardinal(lrg.grid, i, x)
-end
-
-function derivative(lrg::LinearRescaleGrid, i, j, order)
-    factor = linear_rescale_factor(lrg.a, lrg.b, domain(lrg.grid)...)^order # dx/dy 
-    preder = derivative(lrg.grid, i, j, order) # d/dx
-    return factor * preder
-end
-
-function linear_grid_rescale(g::Grid, a::Real, b::Real)
-    return LinearRescaleGrid(g, a, b)
 end
 
 # Operators
