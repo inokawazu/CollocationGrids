@@ -14,4 +14,3 @@ Base.length(g::Grid) = length(eachindex(g))
 Base.size(g::Grid) = size(eachindex(g))
 
 boundaries(g::Grid) = sort(extrema(gridpoints(g)))
-

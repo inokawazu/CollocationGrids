@@ -19,22 +19,37 @@ end
 function fourier_cardinal(T, j::Integer, N::Integer, x)
     N >= 0 || throw(DomainError(N, "Must be nonnegative."))
     xj = fourier_gridpoint(T, j, N)
-    c(k) = abs(k) == N ? 2 : 1
+    c(k) = (k == N || k == -N) ? 2 : 1
 
-    return sum(2*cos(k*(x-xj))/c(k) for k in 0:N)/(2N) - 1/(2N)
+    return sum(cos(k * (x - xj)) / c(k) for k in 1:N) / N + 1/(2*N*c(0))
 end
 
 function fourier_derivative(T, i::Integer, j::Integer, N::Integer, order::Integer)::T
     if order == 0
         return T(i == j)
     elseif order == 1
-        xi = fourier_gridpoint(T, i, N)
-        xj = fourier_gridpoint(T, j, N)
-        return i == j ? zero(T) : (-1)^(i+j)/2*cot(T(xi-xj)/2)
+        if i == j
+            return zero(T)
+        else
+            xi = fourier_gridpoint(T, i, N)
+            xj = fourier_gridpoint(T, j, N)
+            return T(
+                     # 0.5 * (-1)^(i-j) * cot((xi-xj)/2) 
+                     0.5 * cos(N * (xi - xj)) * cot((xi-xj)/2) 
+                    )
+        end
     elseif order == 2
-        xi = fourier_gridpoint(T, i, N)
-        xj = fourier_gridpoint(T, j, N)
-        return i == j ? T(-(1+2*N^2)/6) : (-1)^(i+j+1)/2/(sin(T(xi-xj)/2))^2
+        if i == j
+            return T(
+                     -(1+2*N^2)/6
+                    )
+        else
+            xi = fourier_gridpoint(T, i, N)
+            xj = fourier_gridpoint(T, j, N)
+            return T(
+                     (-1)^(i-j+1)/(2*sin((xi-xj)/2)^2) 
+                    )
+        end
     end
 
     return throw(DomainError(order, "No derivative for this order."))
