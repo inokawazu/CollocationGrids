@@ -12,5 +12,6 @@ end
 
 Base.length(g::Grid) = length(eachindex(g))
 Base.size(g::Grid) = size(eachindex(g))
+Base.eltype(g::Grid{T}) where T = T
 
 boundaries(g::Grid) = sort(extrema(gridpoints(g)))

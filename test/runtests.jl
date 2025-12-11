@@ -46,11 +46,12 @@ end
 struct TestGrid
     label
     grid
+    T
 end
 
 const TWO_PI_PERIODIC_TEST_GRIDS = [
-              TestGrid("Fourier T = Float64 with order 20", FourierGrid{Float64}(20))
-              TestGrid("Fourier T = Float64 with order 10", FourierGrid{Float64}(10))
+              TestGrid("Fourier T = Float64 with order 20", FourierGrid{Float64}(20), Float64)
+              TestGrid("Fourier T = Float64 with order 10", FourierGrid{Float64}(10), Float64)
              ]
 
 const TWO_PI_PERIODIC_TEST_FUNCTIONS = [
@@ -68,11 +69,13 @@ const INTERVAL_TEST_FUNCTIONS = [
 const INTERVAL_TEST_GRIDS = [
                              TestGrid(
                                       "Chebyshev-Lobatto Grid T = Float64 with order 20",
-                                      ChebyshevLobattoGrid{Float64}(20)
+                                      ChebyshevLobattoGrid{Float64}(20),
+                                      Float64
                                      )
                              TestGrid(
                                       "Chebyshev-Lobatto Grid T = Float64 with order 30",
-                                      ChebyshevLobattoGrid{Float64}(30)
+                                      ChebyshevLobattoGrid{Float64}(30),
+                                      Float64
                                      )
                             ]
 
@@ -81,11 +84,15 @@ append!(
         map(INTERVAL_TEST_GRIDS) do tg
             grid = linear_rescale(tg.grid, 0, 5)
             label = "with linear rescale from $(boundaries(tg.grid)) to (0, 5)"
-            TestGrid(label, grid)
+            TestGrid(label, grid, eltype(grid))
         end
        )
 
 @testset "$(test_grid.label)" for test_grid in TWO_PI_PERIODIC_TEST_GRIDS
+    @testset "Eltype Test" begin
+        @test eltype(test_grid.grid) == test_grid.T
+    end
+
     @testset "Testing function: $(test_function.label)" for test_function in TWO_PI_PERIODIC_TEST_FUNCTIONS
         @testset "Value Test" begin
             value_test(test_grid, test_function)
@@ -98,6 +105,10 @@ append!(
 end
 
 @testset "$(test_grid.label)" for test_grid in INTERVAL_TEST_GRIDS 
+    @testset "Eltype Test" begin
+        @test eltype(test_grid.grid) == test_grid.T
+    end
+
     @testset "Testing function: $(test_function.label)" for test_function in INTERVAL_TEST_FUNCTIONS
         @testset "Value Test" begin
             value_test(test_grid, test_function)
