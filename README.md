@@ -18,7 +18,7 @@ CollocationGrids.jl provides a comprehensive framework for working with various 
 
 ```julia
 using Pkg
-Pkg.add("CollocationGrids")
+Pkg.add(url = "https://github.com/inokawazu/CollocationGrids")
 ```
 
 ## Quick Start
